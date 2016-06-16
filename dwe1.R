@@ -1,7 +1,5 @@
 library('dplyr')
 
-setwd("~/Documents/Springboard/Foundations of Data Science")
-
 # standardize company names
 cleanCompany <- function(company) {
   if (startsWith(company, 'p') | startsWith(company, 'P') | startsWith(company, 'f')) {
@@ -47,7 +45,7 @@ refine_cleaned <- read.table("refine_original.csv", header=TRUE, sep=",")
 # Create new variables
 refine_cleaned <- mutate(refine_cleaned, product_code=Product.code...number, product_number=Product.code...number, category=product_code, full_address='')
 
-# 1. Clean company names. Funny that an exercise in R would start with step 0 instead of 1.
+# 1. Clean company names.
 refine_cleaned$company <- sapply(as.vector(refine_cleaned$company), cleanCompany)
 
 # 2. Split the brilliantly named Product.code...number variable at the dash and create 2 new variables from the result
@@ -60,7 +58,7 @@ refine_cleaned$category <- sapply(as.vector(refine_cleaned$product_code), addCat
 # 4. Concatenate address fields
 refine_cleaned$full_address <- paste(refine_cleaned$address, refine_cleaned$city, refine_cleaned$country, sep = ',')
 
-# "5: Create dummy variables for company and product category", whatever that means. Using booleans instead of integers. Duh.
+# 5. Create dummy variables for company and product category
 refine_cleaned <- mutate(refine_cleaned, company_philips=(company=='phillips'), company_akzo=(company=='azko'), company_van_houten=(company=='van houten'), company_unilever=(company=='unilever'))
 refine_cleaned <- mutate(refine_cleaned, product_smartphone=(category=='Smartphone'), product_tv=(category=='TV'), product_laptop=(category=='Laptop'), product_tablet=(category=='Tablet'))
 refine_cleaned$company_philips <- sapply(refine_cleaned$company_philips, boolToInteger)
